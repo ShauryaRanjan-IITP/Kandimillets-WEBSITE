@@ -56,17 +56,20 @@ export default function TrustBadge({ item }: TrustBadgeProps) {
   const IconComponent = iconMap[item.icon];
 
   return (
-    <div className="premium-card bg-white/80 backdrop-blur rounded-2xl p-8 text-center border border-warm-200 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+    <div className="premium-card p-8 md:p-10 text-center relative overflow-hidden group">
+      {/* Decorative subtle background element */}
+      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-50/50 to-transparent rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-110" />
+
       {/* Icon Circle */}
-      <div className="mx-auto flex items-center justify-center w-16 h-16 rounded-2xl bg-green-50 text-green-600 shadow-sm">
+      <div className="mx-auto flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-green-50 to-green-100 text-green-700 shadow-sm ring-4 ring-white mb-8 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
         <IconComponent />
       </div>
 
-      <h3 className="text-xl font-heading font-bold text-brown-900 mt-6 mb-3">
+      <h3 className="text-xl md:text-2xl font-heading font-bold text-brown-900 mb-4">
         {item.title}
       </h3>
 
-      <p className="text-sm text-brown-600 leading-relaxed">
+      <p className="text-base text-brown-600 leading-relaxed max-w-[280px] mx-auto">
         {item.description}
       </p>
     </div>

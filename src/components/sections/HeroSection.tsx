@@ -3,10 +3,10 @@ import ImageWithFallback from "@/components/ui/ImageWithFallback";
 
 export default function HeroSection() {
   return (
-    <section className="relative bg-gradient-to-br from-warm-50 via-green-50/30 to-warm-100 overflow-hidden">
-      {/* Decorative elements */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-green-100/40 rounded-full -translate-y-1/2 translate-x-1/4 blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gold-100/30 rounded-full translate-y-1/3 -translate-x-1/4 blur-3xl" />
+    <section className="relative bg-gradient-to-br from-warm-50 via-green-50/40 to-warm-100 overflow-hidden">
+      {/* Decorative elements - softened */}
+      <div className="absolute top-0 right-0 w-[550px] h-[550px] bg-green-100/50 rounded-full -translate-y-1/3 translate-x-1/4 blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-[450px] h-[450px] bg-gold-100/40 rounded-full translate-y-1/4 -translate-x-1/4 blur-3xl" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 lg:py-32 relative z-10">
         <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
@@ -94,18 +94,19 @@ export default function HeroSection() {
           </div>
 
           {/* Right: Hero Image */}
-          <div className="flex-1 w-full max-w-lg lg:max-w-none">
+          <div className="flex-1 w-full max-w-lg lg:max-w-none ml-auto lg:pl-10">
             <div className="relative">
               {/* Decorative frame */}
-              <div className="absolute -inset-4 bg-gradient-to-br from-green-200/50 to-gold-200/50 rounded-3xl blur-sm" />
-              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl shadow-green-900/20 animate-float-slow">
+              <div className="absolute -inset-4 bg-gradient-to-br from-green-300/40 to-gold-300/40 rounded-3xl blur-md" />
+              <div className="absolute inset-0 bg-white/20 rounded-2xl transform translate-x-4 translate-y-4" />
+              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl shadow-brown-900/15 animate-float-slow ring-1 ring-white/50">
                 <ImageWithFallback
                   src="/images/hero-products-placeholder.jpg"
                   alt="Kandimillets premium healthy food products — Makhana, Ragi Semiya, and Jowar Pasta"
                   fill
                   category="hero"
                   sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover"
+                  className="object-cover scale-105"
                 />
               </div>
             </div>

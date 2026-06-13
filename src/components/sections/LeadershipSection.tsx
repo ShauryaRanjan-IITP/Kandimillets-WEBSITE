@@ -4,7 +4,7 @@ import { leaders } from "@/data/leadership";
 
 export default function LeadershipSection() {
   return (
-    <section className="py-16 md:py-24 bg-white">
+    <section className="py-16 md:py-24 bg-warm-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
           title="Our Leadership"

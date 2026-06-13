@@ -10,7 +10,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   return (
     <div className="group premium-card overflow-hidden">
       {/* Product Image */}
-      <div className="relative aspect-[4/3] overflow-hidden">
+      <div className="relative aspect-[4/3] overflow-hidden border-b border-warm-100 bg-warm-50">
         <ImageWithFallback
           src={product.image}
           alt={product.name}
@@ -22,7 +22,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
 
       {/* Card Body */}
-      <div className="p-5">
+      <div className="p-6">
         <Link
           href={`/products/${product.slug}`}
           className="text-xl font-heading font-semibold text-brown-900 hover:text-green-700 transition-colors"

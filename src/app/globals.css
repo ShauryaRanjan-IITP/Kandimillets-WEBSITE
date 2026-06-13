@@ -38,11 +38,11 @@
   --color-gold-500: #e5a817;
   --color-gold-600: #c08a0e;
 
-  /* --- Background: Warm White Accents --- */
-  --color-warm-50: #F7FAF5;  /* Subtle Green Tint */
-  --color-warm-100: #F3F8F0; /* Soft Leaf Tint */
-  --color-warm-200: #FAF8F3; /* Warm Earth Tint */
-  --color-warm-300: #f0ebd9;
+  /* --- Background: Warm Paper System --- */
+  --color-warm-50: #FCFDFC;  /* Crisp but warm white */
+  --color-warm-100: #F4F7F2; /* Distinct subtle organic green */
+  --color-warm-200: #F0EDE5; /* Earthy organic paper */
+  --color-warm-300: #E6E1D6;
 
   /* --- Font Families --- */
   --font-sans: var(--font-inter);
@@ -212,7 +212,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* --- Premium Card --- */
 .premium-card {
-  @apply bg-white rounded-2xl border border-warm-200 shadow-sm hover:shadow-xl transition-all duration-300 ease-in-out hover:-translate-y-1;
+  @apply bg-white rounded-[1.25rem] border border-warm-200 shadow-md shadow-brown-900/5 hover:shadow-2xl hover:shadow-brown-900/10 transition-all duration-500 ease-out hover:-translate-y-1.5;
 }
 
 /* --- Glass Card --- */
@@ -225,7 +225,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* --- Premium Image Hover --- */
 .premium-image-hover {
-  @apply transition-transform duration-500 ease-out hover:scale-[1.03];
+  @apply transition-transform duration-700 ease-out hover:scale-[1.02];
 }
 
 /* --- Floating Animation --- */

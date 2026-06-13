@@ -10,11 +10,11 @@ export default function PageHero({
   variant = "green",
 }: PageHeroProps) {
   const gradientMap = {
-    green: "from-green-700 via-green-600 to-green-800",
-    brown: "from-brown-700 via-brown-600 to-gold-600",
-    gold: "from-gold-500 via-brown-500 to-brown-700",
-    community: "from-green-800 via-green-700 to-gold-600",
-    blue: "from-blue-900 via-indigo-800 to-purple-900",
+    green: "from-green-700 via-green-700 to-green-800",
+    brown: "from-brown-700 via-brown-600 to-brown-700",
+    gold: "from-gold-500 via-brown-500 to-brown-600",
+    community: "from-green-800 via-green-700 to-brown-500",
+    blue: "from-blue-900 via-indigo-800 to-blue-900",
   };
 
   const accentMap = {

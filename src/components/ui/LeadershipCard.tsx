@@ -21,14 +21,15 @@ export default function LeadershipCard({ leader }: LeadershipCardProps) {
       </div>
 
       {/* Info */}
-      <div className="p-5">
-        <h3 className="text-xl font-heading font-semibold text-brown-900">
+      <div className="p-6 md:p-8 text-center">
+        <h3 className="text-2xl font-heading font-bold text-brown-900 mb-1">
           {leader.name}
         </h3>
-        <p className="text-green-600 font-medium text-sm mt-1">
+        <p className="text-green-700 font-semibold text-sm tracking-wide uppercase mb-4">
           {leader.designation}
         </p>
-        <p className="text-sm text-brown-600 mt-3">
+        <div className="w-12 h-0.5 bg-gradient-to-r from-green-300 to-gold-300 mx-auto mb-4" />
+        <p className="text-base text-brown-600 leading-relaxed">
           {leader.bio}
         </p>
       </div>

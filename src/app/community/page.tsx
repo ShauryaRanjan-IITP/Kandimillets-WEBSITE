@@ -35,8 +35,8 @@ export default function CommunityPage() {
         {/* Narrative Gallery (Staggered Masonry feel) */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center mb-16">
           
-          {/* Image 1: The Stall (Left, takes up 7 cols) */}
-          <div className="md:col-span-7 space-y-4">
+          {/* Image 1: The Stall (Left, takes up 8 cols) */}
+          <div className="md:col-span-8 space-y-4">
             <div className="premium-card overflow-hidden aspect-[4/3] relative">
               <ImageWithFallback
                 src="/images/nakshatra-anand-mela-stall.jpeg"
@@ -52,8 +52,8 @@ export default function CommunityPage() {
             </p>
           </div>
 
-          {/* Text block for Image 1 (Right, 5 cols) */}
-          <div className="md:col-span-5 md:pl-8">
+          {/* Text block for Image 1 (Right, 4 cols) */}
+          <div className="md:col-span-4 md:pl-8">
             <h3 className="text-2xl font-heading font-bold text-brown-900 mb-4">
               Direct to Consumer
             </h3>
@@ -67,8 +67,8 @@ export default function CommunityPage() {
         {/* Image 2: Consumer Interaction (Right heavy) */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center mb-16 flex-col-reverse md:flex-row">
           
-          {/* Text block for Image 2 (Left, 5 cols) */}
-          <div className="md:col-span-5 md:pr-8 order-2 md:order-1">
+          {/* Text block for Image 2 (Left, 4 cols) */}
+          <div className="md:col-span-4 md:pr-8 order-2 md:order-1">
             <h3 className="text-2xl font-heading font-bold text-brown-900 mb-4">
               Valuable Feedback
             </h3>
@@ -77,8 +77,8 @@ export default function CommunityPage() {
             </p>
           </div>
 
-          {/* Image 2 (Right, takes up 7 cols) */}
-          <div className="md:col-span-7 space-y-4 order-1 md:order-2">
+          {/* Image 2 (Right, takes up 8 cols) */}
+          <div className="md:col-span-8 space-y-4 order-1 md:order-2">
             <div className="premium-card overflow-hidden aspect-[16/9] relative">
               <ImageWithFallback
                 src="/images/nakshatra-anand-mela-consumers-1.jpeg"
@@ -97,7 +97,7 @@ export default function CommunityPage() {
         </div>
 
         {/* Image 3: Community Focus (Centered large) */}
-        <div className="max-w-4xl mx-auto space-y-6">
+        <div className="max-w-5xl mx-auto space-y-6">
           <div className="text-center mb-8">
             <h3 className="text-2xl font-heading font-bold text-brown-900 mb-4">
               Building Connections
@@ -123,7 +123,7 @@ export default function CommunityPage() {
       </section>
 
       {/* What We Learned Section */}
-      <section className="py-16 bg-white border-y border-warm-100">
+      <section className="py-16 bg-warm-50 border-y border-warm-100">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader 
             title="What We Learned From Consumers" 
@@ -166,7 +166,7 @@ export default function CommunityPage() {
       </section>
 
       {/* Looking Ahead */}
-      <section className="py-16 bg-warm-100">
+      <section className="py-16 bg-warm-200">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-heading font-bold text-brown-900 mb-6">Looking Ahead</h2>
           <p className="text-xl text-brown-700 leading-relaxed font-medium">

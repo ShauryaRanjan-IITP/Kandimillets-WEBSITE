@@ -4,7 +4,7 @@ import { trustItems } from "@/data/trust";
 
 export default function TrustSection() {
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-b from-warm-50 to-white">
+    <section className="py-16 md:py-24 bg-gradient-to-b from-warm-50 to-warm-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
           title="Trust & Credentials"
