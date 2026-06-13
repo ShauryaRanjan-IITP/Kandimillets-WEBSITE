@@ -57,15 +57,15 @@ export default function WhySection() {
           {values.map((value) => (
             <div
               key={value.title}
-              className="text-center p-6 rounded-2xl bg-warm-50 border border-warm-200 hover:border-green-200 hover:shadow-md transition-all duration-300 group"
+              className="premium-card bg-white text-center p-8 rounded-2xl border border-warm-200 hover:border-green-300 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group"
             >
-              <div className="w-16 h-16 mx-auto rounded-2xl bg-green-50 text-green-600 flex items-center justify-center group-hover:bg-green-100 transition-colors duration-300">
+              <div className="w-20 h-20 mx-auto rounded-2xl bg-green-50 text-green-600 flex items-center justify-center group-hover:bg-green-100 transition-colors duration-300 shadow-sm">
                 {value.icon}
               </div>
-              <h3 className="mt-5 text-lg font-heading font-semibold text-brown-900">
+              <h3 className="mt-6 text-xl font-heading font-bold text-brown-900 mb-3">
                 {value.title}
               </h3>
-              <p className="mt-2 text-sm text-brown-600 leading-relaxed">
+              <p className="text-sm text-brown-600 leading-relaxed">
                 {value.description}
               </p>
             </div>

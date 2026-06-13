@@ -1,7 +1,7 @@
 interface PageHeroProps {
   title: string;
   subtitle?: string;
-  variant?: "green" | "brown" | "blue";
+  variant?: "green" | "brown" | "gold" | "community" | "blue";
 }
 
 export default function PageHero({
@@ -10,14 +10,18 @@ export default function PageHero({
   variant = "green",
 }: PageHeroProps) {
   const gradientMap = {
-    green: "from-green-800 via-green-700 to-green-600",
-    brown: "from-brown-800 via-brown-700 to-brown-600",
-    blue: "from-slate-800 via-indigo-800 to-slate-700",
+    green: "from-green-700 via-green-600 to-green-800",
+    brown: "from-brown-700 via-brown-600 to-gold-600",
+    gold: "from-gold-500 via-brown-500 to-brown-700",
+    community: "from-green-800 via-green-700 to-gold-600",
+    blue: "from-blue-900 via-indigo-800 to-purple-900",
   };
 
   const accentMap = {
     green: "from-green-400 to-gold-400",
     brown: "from-brown-400 to-gold-400",
+    gold: "from-gold-400 to-white",
+    community: "from-green-400 to-gold-400",
     blue: "from-indigo-400 to-blue-400",
   };
 

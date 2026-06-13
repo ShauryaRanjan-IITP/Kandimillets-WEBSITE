@@ -7,16 +7,16 @@ interface LeadershipCardProps {
 
 export default function LeadershipCard({ leader }: LeadershipCardProps) {
   return (
-    <div className="group bg-white rounded-2xl overflow-hidden shadow-sm border border-warm-200 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5">
+    <div className="group premium-card">
       {/* Portrait Image */}
-      <div className="relative aspect-[3/4] overflow-hidden">
+      <div className="relative aspect-[4/5] overflow-hidden">
         <ImageWithFallback
           src={leader.image}
           alt={leader.name}
           fill
           category="leadership"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover transition-transform duration-300 group-hover:scale-105"
+          className="object-cover premium-image-hover"
         />
       </div>
 

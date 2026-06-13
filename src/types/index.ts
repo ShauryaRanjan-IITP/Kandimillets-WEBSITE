@@ -6,7 +6,7 @@ export interface Product {
   id: string;
   name: string;
   slug: string;
-  category: "makhana" | "millet";
+  category: "makhana" | "millet" | "sattu";
   description: string;
   longDescription: string;
   highlights: string[];
@@ -70,18 +70,11 @@ export interface SiteConfig {
   };
   contact: {
     phone: string;
-    whatsapp: string;
-    whatsappUrl: string;
+    phoneAction: string;
     email: string;
     address: string[];
     googleMapsUrl: string;
     googleMapsEmbed: string;
-  };
-  social: {
-    instagram?: string;
-    facebook?: string;
-    linkedin?: string;
-    twitter?: string;
   };
   seo: {
     domain: string;
@@ -97,6 +90,7 @@ export interface SiteConfig {
 export interface InquiryFormData {
   name: string;
   businessName: string;
+  email: string;
   location: string;
   phone: string;
   productInterest: string;

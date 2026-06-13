@@ -17,7 +17,7 @@ export const products: Product[] = [
       "Versatile — snack or cooking ingredient",
       "No artificial additives",
     ],
-    image: "/images/makhana-placeholder.jpg",
+    image: "/images/makhana-placeholder.jpg.png",
     availabilityText: "Available for Retail & Bulk Supply",
   },
   {
@@ -36,7 +36,7 @@ export const products: Product[] = [
       "Roasted for perfect crunch",
       "Healthier alternative to processed snacks",
     ],
-    image: "/images/salted-makhana-placeholder.jpg",
+    image: "/images/salted-makhana-placeholder.jpg.jpeg",
     availabilityText: "Available for Retail & Bulk Supply",
   },
   {
@@ -55,7 +55,27 @@ export const products: Product[] = [
       "Traditional Indian flavors",
       "Perfect for sweet snack cravings",
     ],
-    image: "/images/jaggery-makhana-placeholder.jpg",
+    image: "/images/jaggery-makhana-placeholder.jpg.png",
+    availabilityText: "Available for Retail & Bulk Supply",
+  },
+  {
+    id: "chana-sattu",
+    name: "Chana Sattu",
+    slug: "chana-sattu",
+    category: "sattu",
+    description:
+      "Traditional roasted gram flour from Bihar. A high-protein, naturally cooling superfood with deep cultural roots.",
+    longDescription:
+      "Our Chana Sattu is sourced through trusted partnerships in Patna, Bihar — a state where Sattu has been a dietary staple for generations. Made from roasted Bengal gram (chana), this flour is packed with protein, fiber, and essential nutrients. Sattu is known for its natural cooling properties and versatility — it can be mixed into refreshing drinks, used as a filling for litti, or incorporated into various traditional dishes. Kandimillets brings this authentic Patna heritage food to retailers and distributors across India.",
+    highlights: [
+      "Sourced from Patna",
+      "High in protein and fiber",
+      "Natural cooling properties",
+      "Versatile — drinks, litti, dishes",
+      "Traditional Bihar superfood",
+      "No artificial additives",
+    ],
+    image: "/images/chana-sattu-placeholder.jpg.png",
     availabilityText: "Available for Retail & Bulk Supply",
   },
   {
@@ -74,7 +94,7 @@ export const products: Product[] = [
       "Versatile for multiple dishes",
       "Supports millet-based nutrition",
     ],
-    image: "/images/ragi-semiya-placeholder.jpg",
+    image: "/images/ragi-semiya-placeholder.jpg.png",
     availabilityText: "Available for Retail & Bulk Supply",
   },
   {
@@ -93,7 +113,7 @@ export const products: Product[] = [
       "Gluten-conscious alternative",
       "Ideal for health-focused consumers",
     ],
-    image: "/images/jowar-pasta-placeholder.jpg",
+    image: "/images/jowar-pasta-placeholder.jpg.jpg",
     availabilityText: "Available for Retail & Bulk Supply",
   },
 ];

@@ -15,22 +15,16 @@ export default function ContactSection() {
           {/* Contact cards */}
           <div className="space-y-4">
             <ContactCard
-              icon="whatsapp"
-              title="WhatsApp"
-              value={siteConfig.contact.whatsapp}
-              href={siteConfig.contact.whatsappUrl}
-            />
-            <ContactCard
               icon="phone"
               title="Phone"
               value={siteConfig.contact.phone}
-              href={`tel:${siteConfig.contact.phone}`}
+              href="tel:+919973453069"
             />
             <ContactCard
               icon="email"
               title="Email"
               value={siteConfig.contact.email}
-              href={`mailto:${siteConfig.contact.email}`}
+              href="mailto:millet2024usha@gmail.com"
             />
             <ContactCard
               icon="location"

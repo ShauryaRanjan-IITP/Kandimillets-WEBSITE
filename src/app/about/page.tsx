@@ -21,8 +21,9 @@ export default function AboutPage() {
       />
 
       {/* Main Content Section */}
-      <section className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+      <section className="py-16 md:py-24 bg-white">
+        <div className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
           <div>
             <SectionHeader title="Our Story" align="left" />
             <div className="mt-8 space-y-6 text-brown-600 leading-relaxed text-lg">
@@ -52,20 +53,21 @@ export default function AboutPage() {
             <div className="bg-warm-50 p-8 rounded-2xl border border-warm-100">
               <h3 className="text-2xl font-heading font-bold text-brown-900 mb-4">Our Vision</h3>
               <p className="text-brown-600">
-                To be the most trusted distribution partner for India's regional superfoods, 
+                To be the most trusted distribution partner for India&apos;s regional superfoods, 
                 recognized for our commitment to authenticity, quality, and sustainable partnerships.
               </p>
             </div>
           </div>
         </div>
+        </div>
       </section>
 
       {/* Authentic Sourcing Philosophy */}
-      <section className="py-16 bg-white border-y border-warm-100">
+      <section className="py-16 bg-warm-50 border-y border-warm-100">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
            <h2 className="text-3xl font-heading font-bold text-brown-900 mb-6">Authentic Sourcing Philosophy</h2>
            <p className="text-lg text-brown-600 leading-relaxed">
-             Our philosophy is rooted in authenticity. We don't just source products; we source from the regions 
+             Our philosophy is rooted in authenticity. We don&apos;t just source products; we source from the regions 
              where they grow best and are traditionally cultivated. We verify our suppliers, understand their processes, 
              and ensure that the product reaching you is as close to its natural, traditional form as possible.
            </p>
@@ -73,8 +75,9 @@ export default function AboutPage() {
       </section>
 
       {/* Leadership Section */}
-      <section className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full">
-        <SectionHeader 
+      <section className="py-16 md:py-24 bg-white">
+        <div className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full">
+          <SectionHeader 
           title="Our Leadership" 
           subtitle="The team driving our vision forward."
           align="center"
@@ -85,16 +88,19 @@ export default function AboutPage() {
             <LeadershipCard key={leader.id} leader={leader} />
           ))}
         </div>
+        </div>
       </section>
 
       {/* CTA Section */}
-      <div className="py-16 px-4 sm:px-6 lg:px-8 mb-8">
+      <section className="py-16 bg-warm-100 mb-8">
+        <div className="px-4 sm:px-6 lg:px-8">
         <CTASection
           title="Partner With Us"
           subtitle="Available for Retail & Bulk Supply. Contact us for pricing and distribution opportunities."
           variant="brown"
         />
-      </div>
+        </div>
+      </section>
     </main>
   );
 }

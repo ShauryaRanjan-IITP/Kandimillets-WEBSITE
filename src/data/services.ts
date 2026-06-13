@@ -12,7 +12,7 @@ export const services: Service[] = [
       "Market price forecasting",
       "Supply chain optimization",
     ],
-    image: "/images/agri-tech-ai.jpg",
+    image: "/images/agri-tech-ai.jpg.png",
     icon: "brain",
   },
   {
@@ -26,7 +26,7 @@ export const services: Service[] = [
       "Precision agriculture tools",
       "Weather monitoring systems",
     ],
-    image: "/images/agri-tech-solutions.jpg",
+    image: "/images/agri-tech-solutions.jpg.png",
     icon: "sprout",
   },
   {
@@ -40,7 +40,7 @@ export const services: Service[] = [
       "Process automation",
       "Reporting systems",
     ],
-    image: "/images/agri-tech-data.jpg",
+    image: "/images/agri-tech-data.jpg.png",
     icon: "database",
   },
   {
@@ -54,7 +54,7 @@ export const services: Service[] = [
       "Digital marketing strategy",
       "Technology roadmap planning",
     ],
-    image: "/images/agri-tech-digital.jpg",
+    image: "/images/agri-tech-digital.jpg.png",
     icon: "monitor",
   },
 ];

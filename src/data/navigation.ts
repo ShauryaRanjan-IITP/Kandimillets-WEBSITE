@@ -7,6 +7,7 @@ export const mainNavLinks: NavLink[] = [
   { label: "Sourcing", href: "/sourcing" },
   { label: "Partner", href: "/partner" },
   { label: "Agri-Tech", href: "/agri-tech" },
+  { label: "Community", href: "/community" },
 ];
 
 export const footerQuickLinks: NavLink[] = [

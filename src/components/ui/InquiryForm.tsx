@@ -1,69 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState } from "react";
 import { products } from "@/data/products";
 import siteConfig from "@/data/siteConfig";
-import { submitToGoogleSheets } from "@/lib/submitToGoogleSheets";
-import type { InquiryFormData } from "@/types";
+import { submitInquiry, type FormState } from "@/app/actions";
+
+const initialState: FormState = {
+  status: "idle",
+  message: "",
+};
 
 export default function InquiryForm() {
-  const [formData, setFormData] = useState<InquiryFormData>({
-    name: "",
-    businessName: "",
-    location: "",
-    phone: "",
-    productInterest: "",
-    message: "",
-  });
-
-  const [status, setStatus] = useState<
-    "idle" | "submitting" | "success" | "error"
-  >("idle");
-  const [statusMessage, setStatusMessage] = useState("");
-
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus("submitting");
-
-    const result = await submitToGoogleSheets(formData);
-
-    if (result.success) {
-      setStatus("success");
-      setStatusMessage(result.message);
-      setFormData({
-        name: "",
-        businessName: "",
-        location: "",
-        phone: "",
-        productInterest: "",
-        message: "",
-      });
-    } else {
-      setStatus("error");
-      setStatusMessage(result.message);
-    }
-
-    // Reset status after 5 seconds
-    setTimeout(() => {
-      setStatus("idle");
-      setStatusMessage("");
-    }, 5000);
-  };
+  const [state, formAction, isPending] = useActionState(submitInquiry, initialState);
 
   return (
     <form
-      onSubmit={handleSubmit}
+      action={formAction}
       className="bg-white rounded-2xl shadow-sm border border-warm-200 p-6 md:p-8 space-y-5"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -80,11 +32,16 @@ export default function InquiryForm() {
             id="inquiry-name"
             name="name"
             required
-            value={formData.name}
-            onChange={handleChange}
+            minLength={2}
             placeholder="Enter your full name"
             className="w-full px-4 py-2.5 rounded-xl border border-warm-300 bg-warm-50 text-brown-900 placeholder:text-brown-400 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all duration-200"
+            aria-describedby={state.errors?.find(e => e.field === "name") ? "name-error" : undefined}
           />
+          {state.errors?.find(e => e.field === "name") && (
+            <p id="name-error" className="mt-1 text-xs text-red-600">
+              {state.errors.find(e => e.field === "name")?.message}
+            </p>
+          )}
         </div>
 
         {/* Business Name */}
@@ -100,11 +57,40 @@ export default function InquiryForm() {
             id="inquiry-business"
             name="businessName"
             required
-            value={formData.businessName}
-            onChange={handleChange}
+            minLength={2}
             placeholder="Your company or store name"
             className="w-full px-4 py-2.5 rounded-xl border border-warm-300 bg-warm-50 text-brown-900 placeholder:text-brown-400 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all duration-200"
+            aria-describedby={state.errors?.find(e => e.field === "businessName") ? "business-error" : undefined}
           />
+          {state.errors?.find(e => e.field === "businessName") && (
+            <p id="business-error" className="mt-1 text-xs text-red-600">
+              {state.errors.find(e => e.field === "businessName")?.message}
+            </p>
+          )}
+        </div>
+
+        {/* Email */}
+        <div>
+          <label
+            htmlFor="inquiry-email"
+            className="block text-sm font-medium text-brown-700 mb-1.5"
+          >
+            Email <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="email"
+            id="inquiry-email"
+            name="email"
+            required
+            placeholder="you@company.com"
+            className="w-full px-4 py-2.5 rounded-xl border border-warm-300 bg-warm-50 text-brown-900 placeholder:text-brown-400 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all duration-200"
+            aria-describedby={state.errors?.find(e => e.field === "email") ? "email-error" : undefined}
+          />
+          {state.errors?.find(e => e.field === "email") && (
+            <p id="email-error" className="mt-1 text-xs text-red-600">
+              {state.errors.find(e => e.field === "email")?.message}
+            </p>
+          )}
         </div>
 
         {/* Location */}
@@ -120,11 +106,16 @@ export default function InquiryForm() {
             id="inquiry-location"
             name="location"
             required
-            value={formData.location}
-            onChange={handleChange}
+            minLength={2}
             placeholder="City, State"
             className="w-full px-4 py-2.5 rounded-xl border border-warm-300 bg-warm-50 text-brown-900 placeholder:text-brown-400 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all duration-200"
+            aria-describedby={state.errors?.find(e => e.field === "location") ? "location-error" : undefined}
           />
+          {state.errors?.find(e => e.field === "location") && (
+            <p id="location-error" className="mt-1 text-xs text-red-600">
+              {state.errors.find(e => e.field === "location")?.message}
+            </p>
+          )}
         </div>
 
         {/* Phone */}
@@ -140,39 +131,47 @@ export default function InquiryForm() {
             id="inquiry-phone"
             name="phone"
             required
-            value={formData.phone}
-            onChange={handleChange}
-            placeholder="+91 XXXXXXXXXX"
+            placeholder="+91 98765 43210"
             className="w-full px-4 py-2.5 rounded-xl border border-warm-300 bg-warm-50 text-brown-900 placeholder:text-brown-400 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all duration-200"
+            aria-describedby={state.errors?.find(e => e.field === "phone") ? "phone-error" : undefined}
           />
+          {state.errors?.find(e => e.field === "phone") && (
+            <p id="phone-error" className="mt-1 text-xs text-red-600">
+              {state.errors.find(e => e.field === "phone")?.message}
+            </p>
+          )}
         </div>
-      </div>
 
-      {/* Product Interest */}
-      <div>
-        <label
-          htmlFor="inquiry-product"
-          className="block text-sm font-medium text-brown-700 mb-1.5"
-        >
-          Product Interest <span className="text-red-500">*</span>
-        </label>
-        <select
-          id="inquiry-product"
-          name="productInterest"
-          required
-          value={formData.productInterest}
-          onChange={handleChange}
-          className="w-full px-4 py-2.5 rounded-xl border border-warm-300 bg-warm-50 text-brown-900 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all duration-200 appearance-none"
-        >
-          <option value="">Select a product</option>
-          {products.map((product) => (
-            <option key={product.id} value={product.name}>
-              {product.name}
-            </option>
-          ))}
-          <option value="Multiple Products">Multiple Products</option>
-          <option value="All Products">All Products</option>
-        </select>
+        {/* Product Interest */}
+        <div>
+          <label
+            htmlFor="inquiry-product"
+            className="block text-sm font-medium text-brown-700 mb-1.5"
+          >
+            Product Interest <span className="text-red-500">*</span>
+          </label>
+          <select
+            id="inquiry-product"
+            name="productInterest"
+            required
+            className="w-full px-4 py-2.5 rounded-xl border border-warm-300 bg-warm-50 text-brown-900 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all duration-200 appearance-none"
+            aria-describedby={state.errors?.find(e => e.field === "productInterest") ? "product-error" : undefined}
+          >
+            <option value="">Select a product</option>
+            {products.map((product) => (
+              <option key={product.id} value={product.name}>
+                {product.name}
+              </option>
+            ))}
+            <option value="Multiple Products">Multiple Products</option>
+            <option value="All Products">All Products</option>
+          </select>
+          {state.errors?.find(e => e.field === "productInterest") && (
+            <p id="product-error" className="mt-1 text-xs text-red-600">
+              {state.errors.find(e => e.field === "productInterest")?.message}
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Message */}
@@ -187,33 +186,32 @@ export default function InquiryForm() {
           id="inquiry-message"
           name="message"
           rows={4}
-          value={formData.message}
-          onChange={handleChange}
           placeholder="Tell us about your requirements, expected quantities, or any questions..."
           className="w-full px-4 py-2.5 rounded-xl border border-warm-300 bg-warm-50 text-brown-900 placeholder:text-brown-400 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 transition-all duration-200 resize-none"
         />
       </div>
 
       {/* Status message */}
-      {statusMessage && (
+      {state.status !== "idle" && state.message && (
         <div
+          role="alert"
           className={`rounded-xl px-4 py-3 text-sm font-medium ${
-            status === "success"
+            state.status === "success"
               ? "bg-green-50 text-green-700 border border-green-200"
               : "bg-red-50 text-red-700 border border-red-200"
           }`}
         >
-          {statusMessage}
+          {state.message}
         </div>
       )}
 
       {/* Submit button */}
       <button
         type="submit"
-        disabled={status === "submitting"}
-        className="w-full bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        disabled={isPending}
+        className="w-full bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
-        {status === "submitting" ? (
+        {isPending ? (
           <>
             <svg
               className="w-5 h-5 animate-spin"
@@ -245,19 +243,17 @@ export default function InquiryForm() {
       <p className="text-center text-sm text-brown-500">
         Or reach us directly:{" "}
         <a
-          href={siteConfig.contact.whatsappUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-green-600 font-medium hover:underline"
-        >
-          WhatsApp
-        </a>{" "}
-        ·{" "}
-        <a
           href={`tel:${siteConfig.contact.phone}`}
           className="text-green-600 font-medium hover:underline"
         >
           Call
+        </a>
+        {" · "}
+        <a
+          href={`mailto:${siteConfig.contact.email}`}
+          className="text-green-600 font-medium hover:underline"
+        >
+          Email
         </a>
       </p>
     </form>

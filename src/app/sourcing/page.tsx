@@ -20,18 +20,20 @@ export default function SourcingPage() {
       />
 
       {/* Sourcing Stories */}
-      <section className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full space-y-24">
-        {sourcingStories.map((story, index) => (
+      <section className="py-16 md:py-24 bg-white">
+        <div className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full space-y-24">
+          {sourcingStories.map((story, index) => (
           <SourcingStoryCard
             key={story.id}
             story={story}
             reverse={index % 2 !== 0}
           />
-        ))}
+          ))}
+        </div>
       </section>
 
       {/* Quality Philosophy Section */}
-      <section className="py-16 md:py-24 bg-green-50">
+      <section className="py-16 md:py-24 bg-warm-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <SectionHeader 
             title="Quality Philosophy" 
@@ -39,7 +41,7 @@ export default function SourcingPage() {
           />
           <div className="mt-8 space-y-6 text-brown-600 text-lg leading-relaxed">
             <p>
-              At Kandimillets, quality is not just a standard—it's a commitment to authenticity. 
+              At Kandimillets, quality is not just a standard—it&apos;s a commitment to authenticity. 
               We believe that the best nutritional value comes from foods grown and processed in 
               their traditional regions, using time-honored practices combined with modern hygiene standards.
             </p>
@@ -53,13 +55,15 @@ export default function SourcingPage() {
       </section>
 
       {/* CTA Section */}
-      <div className="py-16 px-4 sm:px-6 lg:px-8 mb-8 bg-white">
+      <section className="py-16 bg-warm-100 mb-8">
+        <div className="px-4 sm:px-6 lg:px-8">
         <CTASection
           title="Source Authentic Products"
           subtitle="Available for Retail & Bulk Supply. Contact us for pricing and inquiries."
           variant="green"
         />
-      </div>
+        </div>
+      </section>
     </main>
   );
 }
