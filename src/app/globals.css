@@ -1,0 +1,218 @@
+@import "tailwindcss";
+
+/* ===================================================
+   KANDIMILLETS DESIGN SYSTEM — Tailwind v4
+   =================================================== */
+
+@theme inline {
+  /* --- Primary: Natural Green --- */
+  --color-green-50: #f0faf0;
+  --color-green-100: #d4f0d4;
+  --color-green-200: #a8e0a8;
+  --color-green-300: #6ec96e;
+  --color-green-400: #3fad3f;
+  --color-green-500: #2d8a2d;
+  --color-green-600: #236e23;
+  --color-green-700: #1b561b;
+  --color-green-800: #143e14;
+  --color-green-900: #0d2a0d;
+
+  /* --- Secondary: Earthy Brown --- */
+  --color-brown-50: #fdf8f3;
+  --color-brown-100: #f5ead9;
+  --color-brown-200: #e8d2b0;
+  --color-brown-300: #d4b07a;
+  --color-brown-400: #c0914e;
+  --color-brown-500: #a07635;
+  --color-brown-600: #7d5c2a;
+  --color-brown-700: #5e4520;
+  --color-brown-800: #3f2f16;
+  --color-brown-900: #271d0e;
+
+  /* --- Accent: Millet Gold --- */
+  --color-gold-50: #fffdf5;
+  --color-gold-100: #fef6d8;
+  --color-gold-200: #fdeaab;
+  --color-gold-300: #fbd97a;
+  --color-gold-400: #f7c443;
+  --color-gold-500: #e5a817;
+  --color-gold-600: #c08a0e;
+
+  /* --- Background: Warm White --- */
+  --color-warm-50: #fffefb;
+  --color-warm-100: #fefcf6;
+  --color-warm-200: #fdf8ee;
+  --color-warm-300: #f5efe4;
+
+  /* --- Font Families --- */
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-outfit);
+
+  /* --- Custom Animations --- */
+  --animate-fade-in-up: fade-in-up 0.6s ease-out forwards;
+  --animate-fade-in: fade-in 0.5s ease-out forwards;
+  --animate-slide-in-left: slide-in-left 0.6s ease-out forwards;
+  --animate-slide-in-right: slide-in-right 0.6s ease-out forwards;
+  --animate-scale-in: scale-in 0.4s ease-out forwards;
+  --animate-float: float 3s ease-in-out infinite;
+}
+
+/* ===================================================
+   KEYFRAMES
+   =================================================== */
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* ===================================================
+   BASE STYLES
+   =================================================== */
+
+:root {
+  --background: #fffefb;
+  --foreground: #271d0e;
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Headings use Outfit font --- */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading), var(--font-sans), system-ui, sans-serif;
+}
+
+/* --- Custom Scrollbar --- */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-warm-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-brown-300);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-brown-400);
+}
+
+/* --- Focus Styles --- */
+:focus-visible {
+  outline: 2px solid var(--color-green-500);
+  outline-offset: 2px;
+}
+
+/* ===================================================
+   UTILITY CLASSES
+   =================================================== */
+
+/* Intersection Observer animation trigger */
+.animate-on-scroll {
+  opacity: 0;
+}
+
+.animate-on-scroll.is-visible {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+.animate-on-scroll.is-visible.delay-100 {
+  animation-delay: 0.1s;
+}
+
+.animate-on-scroll.is-visible.delay-200 {
+  animation-delay: 0.2s;
+}
+
+.animate-on-scroll.is-visible.delay-300 {
+  animation-delay: 0.3s;
+}
+
+.animate-on-scroll.is-visible.delay-400 {
+  animation-delay: 0.4s;
+}
+
+/* --- Section divider --- */
+.section-divider {
+  width: 64px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-green-500), var(--color-gold-400));
+  border-radius: 2px;
+}
+
+/* --- Gradient Text --- */
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-green-600), var(--color-green-400));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* --- Glass Card --- */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
