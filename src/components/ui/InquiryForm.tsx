@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import { products } from "@/data/products";
 import siteConfig from "@/data/siteConfig";
-import { submitInquiry, type FormState } from "@/app/actions";
+import { submitInquiry, type FormState } from "@/app/(site)/actions";
 
 const initialState: FormState = {
   status: "idle",

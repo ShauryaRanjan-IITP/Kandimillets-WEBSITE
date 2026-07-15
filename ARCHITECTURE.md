@@ -627,3 +627,32 @@ Guidance for future AI assistants working in this repo:
 - **Known inconsistencies to be aware of (documented, not to "fix" unless asked):** `/community` is missing from `sitemap.ts`; contact phone/email are hard-coded in several presentational components (`CTASection`, `ProductCard`, `PartnershipStepper`, `HeroSection`) rather than read from `siteConfig`; several interior pages render a `<main>` that nests inside the layout's `<main>`; the form rate-limiter uses a global key rather than a real per-IP key.
 ```
 
+---
+
+# Part VI — Admin Portal Architecture
+
+> **Detail lives elsewhere:** this section is a concise summary only. The full authentication/authorization/database/security/roadmap documentation for the `/admin` subsystem lives in [`docs/ADMIN_SYSTEM.md`](docs/ADMIN_SYSTEM.md) — read that document for anything beyond a high-level orientation.
+
+The Admin Portal (`/admin`) is a private, database-backed subsystem layered onto the same Next.js codebase as the public marketing site, sharing its design tokens but none of its layout, routing, or runtime state. Phase 1 delivered the authentication foundation only — no business features (sales, analytics, reporting) exist yet.
+
+**Why Better Auth was selected.** A dedicated architecture review considered custom auth, Better Auth, Auth.js, Clerk, and Supabase Auth. Custom auth was rejected because password hashing, session handling, and reset/OTP flows are exactly the kind of code that quietly rots over a multi-year lifetime without a dedicated security team. Better Auth was chosen because it is self-hosted (no vendor lock-in, no per-user SaaS cost), integrates directly with this project's own PostgreSQL database via Prisma, and ships first-class Next.js support (`nextCookies()`, `toNextJsHandler`) — giving the same self-hosted, own-your-data profile originally wanted from "custom," but with the security-critical internals maintained upstream instead of by this project.
+
+**Why Prisma was selected.** Prisma is the ORM connecting Better Auth to PostgreSQL, chosen for mature TypeScript type generation, a well-defined migration workflow, and first-class support as an official Better Auth database adapter (`@better-auth/prisma-adapter`).
+
+**Why PostgreSQL was selected.** The near-term future of this subsystem is a Sales Register — inherently tabular, relational data (dates, amounts, retailers, products) needing joins, aggregation, and financial-grade consistency. MongoDB and Google Sheets were explicitly evaluated and rejected during the architecture review for this reason.
+
+**Why Route Groups were introduced.** `src/app/(site)/` is a Next.js route group (parentheses, invisible in the URL) wrapping every existing public page and its chrome (`Navbar`, `Footer`, `FloatingCTA`, all public SEO metadata). This was a structural, URL-preserving move — every public route resolves at its original path — that exists purely to give the admin portal (`src/app/admin/`, a real folder whose name *is* part of the URL) a completely independent `layout.tsx` with no shared navigation, styling logic, or metadata. The root `layout.tsx` now contains only the shared HTML shell and fonts.
+
+**Authentication architecture.** Email + password only, via Better Auth's `emailAndPassword` provider with `disableSignUp: true` enforced at the API layer — there is no public registration anywhere in the system, matching the business rule that only three named individuals are ever authorized. Password hashing uses Better Auth's own maintained scrypt implementation as-is (deliberately not overridden with bcrypt, to avoid re-introducing hand-rolled cryptography). A seed script (`prisma/seed.ts`) is, in this phase, the only way admin accounts are created.
+
+**Authorization architecture.** A `role` enum (`SUPER_ADMIN` / `ADMIN`) and an `isActive` boolean exist on the `User` model, reserved ahead of need per the architecture review's recommendation — but neither is read or enforced by any code yet. Every authenticated admin currently has identical access to a single placeholder dashboard.
+
+**Session management.** Database-backed sessions (not stateless JWTs), referenced by an httpOnly cookie, so access can be revoked in real time rather than waiting for token expiry. Two-layer validation: a fast cookie-presence check in `src/proxy.ts` (Next.js's request-interception file — renamed from `middleware.ts` in Next.js 16) gates every `/admin/*` route before rendering, and a full database-backed session check runs again inside the protected page itself as defense-in-depth.
+
+**Security considerations.** HttpOnly + Secure (forced in production) + Better Auth's default `SameSite` cookies; scrypt password hashing; two-layer session validation; API-level signup rejection; `noindex`/`nofollow` on every admin page; generic (non-enumerating) login error messages. Explicitly **not yet implemented**: functional password reset/OTP (pages exist as placeholders only), audit logging of data mutations, durable rate limiting on login attempts, and enforcement of `isActive`/`role`. See `docs/ADMIN_SYSTEM.md` §7 for the full breakdown.
+
+**Database overview.** Four models, matching Better Auth's canonical schema plus three project-specific additions: `User` (identity + `role`/`isActive`/`lastLoginAt`), `Session` (one row per login), `Account` (credential storage, `providerId: "credential"` for password auth), `Verification` (reserved for future OTP/reset tokens, currently unused). No Sales, Audit Log, or Retailer models exist yet — their purpose is documented in `docs/ADMIN_SYSTEM.md` §6 without inventing schemas for them.
+
+**Future scalability.** The planned build order is Password Reset → OTP → Sales Register → Dashboard Analytics → Retailer Management (conditional on scale) → Inventory → Invoices → Reports, each deliberately dependent on the data and infrastructure the previous stage establishes. The `role` field, relational database choice, and route-group isolation were all decided now specifically so that this sequence doesn't require revisiting the authentication foundation later.
+
+
