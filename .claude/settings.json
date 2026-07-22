@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -b cookies.txt \"http://localhost:3000/admin/inventory?search=zzznotfound\" -o noresults.html)",
+      "Bash(curl -s -b cookies.txt http://localhost:3000/admin/sales -o sales_check.html)",
+      "Bash(curl -s -b cookies.txt -X POST http://localhost:3000/admin/inventory/e2e-test-temp -H 'Content-Type: application/json' -d '{\"op\":\"deleteMovements\",\"productId\":\"__TRACKED_VAR__\"}')",
+      "Bash(curl -s -b cookies.txt -X POST http://localhost:3000/admin/inventory/e2e-test-temp -H 'Content-Type: application/json' -d '{\"op\":\"resetProduct\",\"productId\":\"__TRACKED_VAR__\"}')",
+      "Bash(curl -s -b cookies.txt -X POST http://localhost:3000/admin/inventory/e2e-test-temp -H 'Content-Type: application/json' -d '{\"op\":\"deleteSale\",\"saleId\":\"__TRACKED_VAR__\"}')",
+      "Bash(curl -s -b cookies.txt -X POST http://localhost:3000/admin/inventory/e2e-test-temp -H 'Content-Type: application/json' -d '{\"op\":\"movements\",\"productId\":\"__TRACKED_VAR__\"}')",
+      "Bash(powershell -Command \"Stop-Process -Id 26200 -Force\")",
+      "Bash(curl -s -b cookies.txt http://localhost:3000/admin/reports -o reports_empty.html)",
+      "Bash(curl -s -b cookies.txt -X POST http://localhost:3000/admin/sales/e2e-test-temp -H 'Content-Type: application/json' -d '{\"op\":\"listIds\"}')",
+      "Bash(curl -s -b cookies.txt -X POST http://localhost:3000/admin/inventory/e2e-test-temp -H 'Content-Type: application/json' -d '{\"op\":\"adjust\",\"input\":{\"productId\":\"__TRACKED_VAR__\",\"direction\":\"IN\",\"quantity\":\"100\",\"reason\":\"INITIAL_STOCK\",\"notes\":\"e2e reports test\"}}')",
+      "Bash(curl -s -b cookies.txt \"http://localhost:3000/admin/reports?range=thisMonth\" -o reports_data.html)",
+      "Bash(curl -s -b cookies.txt -X POST http://localhost:3000/admin/sales/e2e-test-temp -H 'Content-Type: application/json' -d '{\"op\":\"reportSummary\",\"filters\":{}}')",
+      "Bash(curl -s -b cookies.txt -X POST http://localhost:3000/admin/sales/e2e-test-temp -H 'Content-Type: application/json' -d '{\"op\":\"reportSummary\",\"filters\":{\"paymentStatus\":\"PENDING\"}}')",
+      "Bash(curl -s -b cookies.txt -X POST http://localhost:3000/admin/sales/e2e-test-temp -H 'Content-Type: application/json' -d '{\"op\":\"topLists\"}')",
+      "Bash(curl -s -b cookies.txt -X POST http://localhost:3000/admin/sales/e2e-test-temp -H 'Content-Type: application/json' -d '{\"op\":\"reportList\",\"filters\":{\"search\":\"RPT-2\"}}')",
+      "Bash(curl -s -b cookies.txt -X POST http://localhost:3000/admin/sales/e2e-test-temp -H 'Content-Type: application/json' -d '{\"op\":\"reportList\",\"filters\":{\"retailerId\":\"cmrmbtyjs0006no5acrs1z868\"}}')",
+      "Bash(curl -s -b cookies.txt -X POST http://localhost:3000/admin/sales/e2e-test-temp -H 'Content-Type: application/json' -d '{\"op\":\"reportList\",\"filters\":{\"sortBy\":\"totalAmount\",\"sortDir\":\"desc\"}}')",
+      "Bash(curl -s -b cookies.txt -D headers.txt \"http://localhost:3000/admin/reports/export?range=thisMonth\" -o export.csv)",
+      "Bash(curl -s -b cookies.txt \"http://localhost:3000/admin/reports/export?range=thisMonth&status=PENDING\" -o export_pending.csv)",
+      "Bash(curl -s -b cookies.txt \"http://localhost:3000/admin/reports/export?range=thisMonth&retailerId=cmrmbtyjs0006no5acrs1z868\" -o export_retailer.csv)",
+      "Bash(curl -s -D - \"http://localhost:3000/admin/reports/export?range=thisMonth\" -o /dev/null)",
+      "Bash(curl -s -b cookies.txt http://localhost:3000/admin/dashboard -o dashboard_check.html)",
+      "Bash(curl -s -b cookies.txt -X POST http://localhost:3000/admin/sales/e2e-test-temp -H 'Content-Type: application/json' -d '{\"op\":\"deleteAll\",\"ids\":[\"cmrq8crkz00057c5aoersi123\",\"cmrq8csiv00077c5av1afy7io\",\"cmrq8ct9k00097c5azxz0fv38\"]}')",
+      "Bash(curl -s -b cookies.txt -X POST http://localhost:3000/admin/inventory/e2e-test-temp -H 'Content-Type: application/json' -d '{\"op\":\"reset\",\"productId\":\"__TRACKED_VAR__\"}')"
+    ]
+  }
+}

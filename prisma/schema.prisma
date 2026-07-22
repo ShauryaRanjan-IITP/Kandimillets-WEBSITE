@@ -1,7 +1,12 @@
-// Prisma schema for the Kandimillets Admin Portal authentication foundation.
-// Phase 1 scope only: Better Auth core tables (User/Session/Account/Verification)
-// plus the Role/isActive/lastLoginAt fields reserved by the agreed architecture.
-// Do not add Sales Register, analytics, or audit-log models here — later phases.
+// Prisma schema for the Kandimillets Admin Portal.
+// Phase 1: Better Auth core tables (User/Session/Account/Verification) plus
+// the Role/isActive/lastLoginAt fields reserved by the agreed architecture.
+// Phase 2A (see docs/SALES_REGISTER.md): Sales Register data foundation —
+// Retailer, Product, and Sale models.
+// Phase 2C: schema reconciliation with the approved design's final
+// revision — added Sale.saleNumber (immutable, unique, system-generated)
+// and corrected PaymentStatus to PENDING/PARTIAL/PAID/CANCELLED — plus the
+// Server Actions and UI wiring that make this module fully functional.
 
 generator client {
   provider = "prisma-client"
@@ -35,6 +40,23 @@ model User {
 
   sessions Session[]
   accounts Account[]
+
+  // Sales Register (Phase 2A) — reverse relations required by Prisma for
+  // Sale.createdByUserId / Sale.updatedByUserId. Purely structural; adds
+  // no authentication behavior, same pattern as sessions/accounts above.
+  createdSales Sale[] @relation("SaleCreatedBy")
+  updatedSales Sale[] @relation("SaleUpdatedBy")
+
+  // Inventory & Stock Management module — reverse relation required by
+  // Prisma for StockMovement.createdByUserId. Purely structural, same
+  // pattern as createdSales/updatedSales above.
+  stockMovements StockMovement[]
+
+  // Administration module — reverse relations required by Prisma for
+  // AuditLog.userId / BusinessSettings.updatedByUserId. Purely
+  // structural, same pattern as the relations above.
+  auditLogs               AuditLog[]
+  businessSettingsUpdates BusinessSettings[]
 
   @@map("user")
 }
@@ -86,4 +108,306 @@ model Verification {
   updatedAt  DateTime @updatedAt
 
   @@map("verification")
+}
+
+// ---------------------------------------------------------------------------
+// Sales Register — Phase 2A (data foundation) + Phase 2C (reconciled shape,
+// Server Actions, real UI). See docs/SALES_REGISTER.md for the full design.
+// Audit logging (SaleAuditLog) remains a future phase (2E) — not present here.
+// ---------------------------------------------------------------------------
+
+enum PaymentStatus {
+  PENDING
+  PARTIAL
+  PAID
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CASH
+  UPI
+  BANK_TRANSFER
+  CHEQUE
+  OTHER
+}
+
+// Normalized retailer entity — see docs/SALES_REGISTER.md §3. Sales
+// reference a Retailer by id rather than storing a free-text name.
+// Extended for the Retailer Management module: contactPerson,
+// alternatePhone, email, address, pincode, notes are additive, nullable
+// fields (no existing row requires a backfill). `phone` remains nullable
+// at the database level exactly as it already was — the module's "Phone
+// is required" rule is enforced in application validation, not a schema
+// change, to avoid a migration that could fail against any pre-existing
+// row (see docs/ADMIN_SYSTEM.md §11, "add new fields as nullable... so
+// existing rows don't require a manual backfill migration").
+model Retailer {
+  id             String   @id @default(cuid())
+  name           String
+  contactPerson  String?
+  city           String
+  state          String
+  phone          String?
+  alternatePhone String?
+  email          String?
+  gstin          String?
+  address        String?
+  pincode        String?
+  notes          String?
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  sales Sale[]
+
+  @@index([name])
+  @@map("retailer")
+}
+
+// Admin-side product catalog — distinct from the public marketing catalog
+// in src/data/products.ts. See docs/SALES_REGISTER.md §3. Extended for the
+// Product Management module: sku, sellingPrice, description are additive,
+// nullable fields (no existing row requires a backfill). `sku` is
+// database-unique (Postgres allows multiple NULLs under a unique
+// constraint, so pre-existing rows without one are unaffected) while
+// remaining app-enforced "required" for new/edited products, matching the
+// same "additive nullable, app-enforced required" pattern already used for
+// Retailer.phone (see docs/ADMIN_SYSTEM.md §11).
+// Extended for the Inventory & Stock Management module: currentStock is a
+// denormalized running balance (server-maintained, never client-writable —
+// see src/lib/inventory/stockMovement.ts), kept in sync with the immutable
+// StockMovement ledger below inside the same transaction as every
+// movement, so it can be read cheaply on the Product Stock List without
+// re-aggregating the full ledger on every page load. lowStockThreshold is
+// nullable — a product with no threshold set is simply never evaluated
+// for a low-stock warning, rather than defaulting to some arbitrary
+// number. Both fields default/start at 0/null for every existing row, so
+// this is a purely additive change; no historic Sale is retroactively
+// turned into a stock movement (see docs/SALES_REGISTER.md's "Historic
+// Sales remain untouched" principle, applied here to inventory too).
+model Product {
+  id                String   @id @default(cuid())
+  name              String
+  sku               String?  @unique
+  category          String
+  defaultUnit       String
+  sellingPrice      Decimal? @db.Decimal(12, 2)
+  description       String?
+  isActive          Boolean  @default(true)
+  currentStock      Decimal  @default(0) @db.Decimal(12, 3)
+  lowStockThreshold Decimal? @db.Decimal(12, 3)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  sales          Sale[]
+  stockMovements StockMovement[]
+
+  @@index([name])
+  @@map("product")
+}
+
+// Inventory & Stock Management module — immutable stock ledger. Every
+// change to a product's stock (a sale, a sale edit, a sale void, or a
+// manual adjustment) writes exactly one row here; rows are never updated
+// or deleted (see §7 "Never edit history"). `balanceAfter` is a snapshot
+// of Product.currentStock immediately after this movement was applied,
+// so history remains readable/auditable even if currentStock is ever
+// recomputed. `quantity` is always stored positive; `direction` carries
+// the sign. `reference` is a free-text pointer back to the originating
+// Sale (its saleNumber) for SALE/SALE_EDIT/SALE_VOID movements, and null
+// for manual adjustments.
+enum StockMovementDirection {
+  IN
+  OUT
+}
+
+enum StockMovementReason {
+  INITIAL_STOCK
+  PURCHASE
+  SALE
+  SALE_EDIT
+  SALE_VOID
+  DAMAGE
+  SAMPLE
+  MANUAL_CORRECTION
+  EXPIRY
+}
+
+model StockMovement {
+  id        String                 @id @default(cuid())
+  productId String
+  product   Product                @relation(fields: [productId], references: [id], onDelete: Restrict)
+  direction StockMovementDirection
+  quantity  Decimal                @db.Decimal(12, 3)
+  reason    StockMovementReason
+  notes     String?
+  reference String?
+
+  // Snapshot of Product.currentStock immediately after this movement.
+  balanceAfter Decimal @db.Decimal(12, 3)
+
+  createdByUserId String
+  createdByUser   User   @relation(fields: [createdByUserId], references: [id], onDelete: Restrict)
+  createdAt       DateTime @default(now())
+
+  @@index([productId])
+  @@index([createdAt])
+  @@map("stock_movement")
+}
+
+// The core Sales Register ledger row. See docs/SALES_REGISTER.md §3 for
+// the full field-by-field rationale (server-computed totals, unique
+// invoice numbers, soft-delete via isVoided, etc.).
+model Sale {
+  id            String   @id @default(cuid())
+  // Immutable, system-generated, unique — the true internal identifier
+  // (see docs/SALES_REGISTER.md §3, "final design improvements"). Assigned
+  // by application logic at creation, never by a database default.
+  saleNumber    String   @unique
+  invoiceNumber String
+  invoiceDate   DateTime @db.Date
+  dueDate       DateTime @db.Date
+
+  retailerId String
+  retailer   Retailer @relation(fields: [retailerId], references: [id], onDelete: Restrict)
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  quantity Decimal @db.Decimal(12, 3)
+  unit     String
+  rate     Decimal @db.Decimal(12, 2)
+
+  // Reserved, default 0, invisible in the UI until a discount/GST-reporting
+  // feature exists — see docs/SALES_REGISTER.md §3.
+  discountAmount Decimal @default(0) @db.Decimal(12, 2)
+  gstIncluded    Boolean @default(false)
+  taxRate        Decimal @default(0) @db.Decimal(5, 2)
+  taxAmount      Decimal @default(0) @db.Decimal(12, 2)
+
+  // Always computed server-side — never accepted as direct input.
+  totalAmount Decimal @db.Decimal(12, 2)
+
+  paymentStatus     PaymentStatus  @default(PENDING)
+  amountPaid        Decimal        @default(0) @db.Decimal(12, 2)
+  outstandingAmount Decimal        @db.Decimal(12, 2)
+  paymentDate       DateTime?      @db.Date
+  paymentMethod     PaymentMethod?
+
+  externalInvoiceRef String?
+  remarks            String?
+
+  isVoided   Boolean @default(false)
+  voidReason String?
+
+  createdByUserId String
+  createdByUser   User    @relation("SaleCreatedBy", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  updatedByUserId String?
+  updatedByUser   User?   @relation("SaleUpdatedBy", fields: [updatedByUserId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([invoiceDate])
+  @@index([retailerId])
+  @@index([productId])
+  @@index([paymentStatus])
+  @@index([dueDate])
+  @@map("sale")
+}
+
+// ---------------------------------------------------------------------------
+// Administration module — Business Settings, Audit Logs. See the module's
+// task spec for the full design. This AuditLog model is the general-purpose
+// audit trail anticipated (but deferred) throughout every earlier phase —
+// docs/SALES_REGISTER.md's planned "SaleAuditLog" (Phase 2E) and
+// docs/API.md §15's "Audit Logs" future API are both superseded by this
+// single, cross-module log rather than a Sale-only one, since by this
+// phase Retailer/Product/Inventory/User/Settings mutations all need the
+// same trail, not just Sales.
+// ---------------------------------------------------------------------------
+
+// Business Settings — a deliberate singleton (see getBusinessSettings in
+// src/lib/settings/queries.ts for how "the one row" is resolved/created).
+// A dedicated table rather than a key-value settings blob because every
+// field has its own type/validation and a fixed, known shape — the same
+// "explicit named field over a generic bucket" preference already
+// established throughout this project (e.g. rejecting a generic "Party"
+// table for Retailer, docs/SALES_REGISTER.md §4/§12).
+model BusinessSettings {
+  id                        String   @id @default(cuid())
+  businessName              String
+  gstNumber                 String?
+  address                   String?
+  phone                     String?
+  email                     String?
+  invoicePrefix             String   @default("INV")
+  defaultCurrency           String   @default("INR")
+  defaultUnit               String   @default("kg")
+  defaultLowStockThreshold  Decimal? @db.Decimal(12, 3)
+  updatedByUserId           String?
+  updatedByUser             User?    @relation(fields: [updatedByUserId], references: [id], onDelete: SetNull)
+  updatedAt                 DateTime @updatedAt
+
+  @@map("business_settings")
+}
+
+enum AuditAction {
+  LOGIN
+  LOGOUT
+  CREATE
+  UPDATE
+  DEACTIVATE
+  ACTIVATE
+  VOID
+  ADJUSTMENT
+  PASSWORD_RESET
+  // Authentication Hardening & Password Recovery task — the self-service
+  // "forgot password via emailed link" flow has two additional distinct
+  // moments PASSWORD_RESET alone can't tell apart: the request itself,
+  // and an attempt that failed (invalid/expired/already-used token, or a
+  // rejected new password). PASSWORD_RESET keeps its existing meaning —
+  // a *completed* reset (self-service change, admin-initiated reset, or
+  // the emailed-link flow's own success) — unchanged, so every entry
+  // already written by an earlier phase remains correctly labeled.
+  PASSWORD_RESET_REQUESTED
+  PASSWORD_RESET_FAILED
+}
+
+enum AuditEntityType {
+  USER
+  RETAILER
+  PRODUCT
+  SALE
+  STOCK_MOVEMENT
+  BUSINESS_SETTINGS
+  SESSION
+}
+
+// Immutable audit ledger — every write goes through
+// src/lib/audit/log.ts's writeAuditLog(), never a direct
+// prisma.auditLog.create() elsewhere, so every entry has the same shape.
+// `userName` is a denormalized snapshot of the actor's name *at the time
+// of the action* — deliberately not just a live join to User, so a later
+// name change never rewrites what an old audit entry displays (the same
+// "snapshot, don't silently redefine history" principle already used for
+// Sale's retailer/product name fields being resolved once at write time
+// in reporting, not floating). `reference` is a short human-readable
+// pointer (e.g. a Sale Number, a product's name+SKU) for entries where
+// the raw entityId alone wouldn't be recognizable at a glance.
+model AuditLog {
+  id         String          @id @default(cuid())
+  userId     String
+  user       User            @relation(fields: [userId], references: [id], onDelete: Restrict)
+  userName   String
+  action     AuditAction
+  entityType AuditEntityType
+  entityId   String?
+  reference  String?
+  summary    String
+  createdAt  DateTime        @default(now())
+
+  @@index([createdAt])
+  @@index([entityType])
+  @@index([userId])
+  @@map("audit_log")
 }

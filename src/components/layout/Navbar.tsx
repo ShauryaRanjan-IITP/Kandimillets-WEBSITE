@@ -66,6 +66,15 @@ export default function Navbar() {
 
         {/* Desktop CTA Button */}
         <div className="hidden items-center gap-3 md:flex">
+          {/* Subtle staff-only entry point — deliberately understated
+              (muted color, no icon/pill) so it blends into the nav rather
+              than reading as a customer-facing feature. */}
+          <Link
+            href="/admin/login"
+            className="px-2 py-2 text-xs font-medium text-brown-400 transition-colors duration-200 hover:text-brown-600"
+          >
+            Portal
+          </Link>
           <a
             href="tel:+919973453069"
             aria-label="Call Kandimillets"
@@ -151,6 +160,13 @@ export default function Navbar() {
               </svg>
               Call Us
             </a>
+          </div>
+
+          {/* Same subtle staff-only entry point as the desktop nav. */}
+          <div className="mt-3 text-center">
+            <Link href="/admin/login" className="text-xs font-medium text-brown-400 hover:text-brown-600">
+              Portal
+            </Link>
           </div>
         </div>
       </div>
