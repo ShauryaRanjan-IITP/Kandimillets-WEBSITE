@@ -31,7 +31,7 @@ export default function ResetPasswordDialog({ userName, onClose, onConfirm, subm
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-brown-900/40 p-4 backdrop-blur-sm">
-      <div className="premium-card w-full max-w-md p-6">
+      <div className="premium-card max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto p-6">
         <h2 className="font-heading text-lg font-bold text-brown-900">Reset Password for {userName}</h2>
         <p className="mt-2 text-sm text-brown-500">
           This immediately signs the user out of every active session. They&apos;ll need to sign in again with this

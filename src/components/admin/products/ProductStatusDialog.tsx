@@ -25,7 +25,7 @@ export default function ProductStatusDialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-brown-900/40 p-4 backdrop-blur-sm">
-      <div className="premium-card w-full max-w-md p-6">
+      <div className="premium-card max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto p-6">
         <h2 className="font-heading text-lg font-bold text-brown-900">
           {willDeactivate ? "Deactivate" : "Activate"} {productName}?
         </h2>

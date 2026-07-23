@@ -156,8 +156,8 @@ export default function AddSaleModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-brown-900/40 p-4 backdrop-blur-sm">
-      <div className="premium-card w-full max-w-2xl p-6 md:p-8">
-        <div className="flex items-start justify-between border-b border-warm-200 pb-4">
+      <div className="premium-card flex max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col">
+        <div className="flex shrink-0 items-start justify-between border-b border-warm-200 px-6 pt-6 pb-4 md:px-8 md:pt-8">
           <div>
             <h2 className="font-heading text-xl font-bold text-brown-900">
               {isEdit ? "Edit Sale" : "Add Sale"}
@@ -180,7 +180,8 @@ export default function AddSaleModal({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-5 space-y-5">
+        <form onSubmit={handleSubmit} className="flex flex-1 flex-col overflow-hidden">
+        <div className="flex-1 space-y-5 overflow-y-auto px-6 py-5 md:px-8">
           {/* Read-only computed fields */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div>
@@ -453,8 +454,9 @@ export default function AddSaleModal({
               {error ?? submitError}
             </div>
           )}
+        </div>
 
-          <div className="flex flex-wrap items-center justify-end gap-3 border-t border-warm-200 pt-5">
+          <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t border-warm-200 px-6 py-5 md:px-8">
             <button
               type="button"
               onClick={onClose}
