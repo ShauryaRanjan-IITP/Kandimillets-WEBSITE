@@ -11,6 +11,24 @@ const RESET_PASSWORD_TOKEN_EXPIRES_IN_SECONDS = 60 * 60;
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
+
+  // Origin validation (Better Auth's own CSRF-adjacent origin-check
+  // middleware, src/api/middlewares/origin-check.mjs) only ever trusts
+  // exactly two things by default: the origin derived from `baseURL`
+  // above, and whatever is listed here — see
+  // node_modules/better-auth/dist/context/helpers.mjs's getTrustedOrigins.
+  // `BETTER_AUTH_URL` is one fixed string per environment, but Vercel
+  // Preview deployments each get a unique, unpredictable URL
+  // (<project>-<hash>-<team>.vercel.app) that can never match a single
+  // static value — that mismatch is exactly what produced INVALID_ORIGIN
+  // on Preview. `VERCEL_URL` is set by Vercel itself, per deployment, at
+  // build/runtime — including on every Preview build — so this trusts
+  // only the exact origin of whichever deployment is actually running,
+  // never a wildcard/blanket vercel.app allowance.
+  trustedOrigins: [
+    ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
+  ],
+
   database: prismaAdapter(prisma, { provider: "postgresql" }),
 
   // No public registration, ever — admins are provisioned only via the
