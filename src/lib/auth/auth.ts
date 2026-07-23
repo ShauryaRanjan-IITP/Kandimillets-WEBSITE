@@ -25,8 +25,17 @@ export const auth = betterAuth({
   // build/runtime — including on every Preview build — so this trusts
   // only the exact origin of whichever deployment is actually running,
   // never a wildcard/blanket vercel.app allowance.
+  //
+  // `www.kandimillets.com` and `kandimillets.com` are different origins
+  // as far as this exact-match check is concerned, even though they're
+  // the same site — BETTER_AUTH_URL only covers one of them, so the
+  // other has to be listed explicitly or requests made from it (e.g. the
+  // password-reset redirectTo built from window.location.origin) fail
+  // with INVALID_REDIRECT_URL.
   trustedOrigins: [
     ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
+    "https://kandimillets.com",
+    "https://www.kandimillets.com",
   ],
 
   database: prismaAdapter(prisma, { provider: "postgresql" }),
