@@ -50,15 +50,20 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
     }
 
     setIsPending(true);
-    const { error: resetError } = await authClient.resetPassword({ newPassword, token });
-    setIsPending(false);
+    try {
+      const { error: resetError } = await authClient.resetPassword({ newPassword, token });
 
-    if (resetError) {
-      await reportFailedPasswordReset(token);
-      setError(GENERIC_ERROR_MESSAGE);
-      return;
+      if (resetError) {
+        await reportFailedPasswordReset(token);
+        setError(GENERIC_ERROR_MESSAGE);
+        return;
+      }
+      setSuccessMessage("Your password has been reset. You can now sign in with your new password.");
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setIsPending(false);
     }
-    setSuccessMessage("Your password has been reset. You can now sign in with your new password.");
   }
 
   if (successMessage) {

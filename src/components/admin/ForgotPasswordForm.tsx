@@ -49,12 +49,17 @@ export default function ForgotPasswordForm() {
     }
 
     setIsPending(true);
-    await authClient.requestPasswordReset({
-      email: trimmed,
-      redirectTo: `${window.location.origin}/admin/reset-password`,
-    });
-    setIsPending(false);
-    setSuccessMessage(GENERIC_SUCCESS_MESSAGE);
+    try {
+      await authClient.requestPasswordReset({
+        email: trimmed,
+        redirectTo: `${window.location.origin}/admin/reset-password`,
+      });
+      setSuccessMessage(GENERIC_SUCCESS_MESSAGE);
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setIsPending(false);
+    }
   }
 
   if (successMessage) {

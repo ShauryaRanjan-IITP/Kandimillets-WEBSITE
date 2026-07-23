@@ -370,7 +370,6 @@ All variables below are documented in `.env.example` at the project root. **None
 | `DATABASE_URL` | Yes | PostgreSQL connection string (Neon / Vercel Postgres). Used by the Prisma client (`src/lib/db/prisma.ts`) via the `@prisma/adapter-pg` driver adapter — required for every database read/write, including every login. |
 | `BETTER_AUTH_SECRET` | Yes | The signing/encryption key Better Auth uses for session tokens and other cryptographic operations. Better Auth **refuses to start correctly in production without this set** — it throws an error rather than silently falling back to an insecure default. Generate with `openssl rand -base64 32`. |
 | `BETTER_AUTH_URL` | Yes | The server-side base URL of the deployment (e.g. `https://kandimillets.com`), passed to `betterAuth({ baseURL: ... })`. Used for correct cookie/callback scoping. |
-| `NEXT_PUBLIC_BETTER_AUTH_URL` | Yes | The same URL, but exposed to the browser bundle (hence the `NEXT_PUBLIC_` prefix) for the client-side auth SDK (`src/lib/auth/auth-client.ts`) to know where to send requests. |
 | `SEED_SHAURYA_EMAIL` / `SEED_SHAURYA_PASSWORD` | Only when running the seed script | Credentials for the first `SUPER_ADMIN` account. The seed script refuses to run if unset. |
 | `SEED_FATHER_EMAIL` / `SEED_FATHER_PASSWORD` | Only when running the seed script | Credentials for the second `SUPER_ADMIN` account. |
 | `SEED_BUSINESS_EMAIL` / `SEED_BUSINESS_PASSWORD` | Only when running the seed script | Credentials for the `ADMIN`-role "Business Email" account. |
@@ -424,7 +423,7 @@ This runs `prisma/seed.ts`, which reads the six `SEED_*` environment variables, 
 
 ### Environment Variables Recap
 
-See [§8](#8-environment-variables) for the full table. The two easiest-to-forget ones in a fresh Vercel deployment are `BETTER_AUTH_SECRET` (login will hard-fail without it) and `NEXT_PUBLIC_BETTER_AUTH_URL` (must be set at build time, since `NEXT_PUBLIC_` variables are inlined into the client bundle).
+See [§8](#8-environment-variables) for the full table. The easiest-to-forget one in a fresh Vercel deployment is `BETTER_AUTH_SECRET` (login will hard-fail without it). There is deliberately no `NEXT_PUBLIC_BETTER_AUTH_URL` — the client-side auth SDK omits `baseURL` and resolves it from `window.location.origin` at runtime instead, so it works unmodified on every deployment URL (Production, every Preview, local dev).
 
 ---
 

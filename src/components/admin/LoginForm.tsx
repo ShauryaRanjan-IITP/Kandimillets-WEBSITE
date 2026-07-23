@@ -19,17 +19,21 @@ export default function LoginForm() {
     const email = String(formData.get("email") ?? "");
     const password = String(formData.get("password") ?? "");
 
-    const { error: signInError } = await signIn.email({ email, password });
+    try {
+      const { error: signInError } = await signIn.email({ email, password });
 
-    setIsPending(false);
+      if (signInError) {
+        setError("Invalid email or password.");
+        return;
+      }
 
-    if (signInError) {
-      setError("Invalid email or password.");
-      return;
+      router.push("/admin/dashboard");
+      router.refresh();
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setIsPending(false);
     }
-
-    router.push("/admin/dashboard");
-    router.refresh();
   }
 
   return (
